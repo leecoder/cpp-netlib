@@ -60,6 +60,12 @@ void boost::network::http::impl::ssl_delegate::read_some(
   socket_->async_read_some(read_buffer, handler);
 }
 
+void boost::network::http::impl::ssl_delegate::disconnect() {
+  if (socket_.get()) {
+    socket_->lowest_layer().close();
+  }
+}
+
 boost::network::http::impl::ssl_delegate::~ssl_delegate() {}
 
 #endif /* BOOST_NETWORK_PROTOCOL_HTTP_CLIENT_CONNECTION_SSL_DELEGATE_IPP_20110819 */

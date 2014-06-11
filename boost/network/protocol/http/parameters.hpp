@@ -14,6 +14,8 @@
 namespace boost { namespace network { namespace http {
 
     BOOST_PARAMETER_NAME(io_service)
+
+    BOOST_PARAMETER_NAME(timeout)
     
 } /* http */
     

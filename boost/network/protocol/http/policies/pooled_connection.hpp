@@ -162,8 +162,12 @@ namespace boost { namespace network { namespace http {
             return it->second;
         }
 
-        pooled_connection_policy(bool cache_resolved, bool follow_redirect)
-        : resolver_base(cache_resolved), host_connections(), follow_redirect_(follow_redirect) {}
+        pooled_connection_policy(bool cache_resolved, bool follow_redirect, int timeout)
+        : resolver_base(cache_resolved), host_connections(), follow_redirect_(follow_redirect) {
+            if (timeout > 0) {
+                boost::throw_exception(std::runtime_error("Sync client timeout is not implemented yet."));
+            }
+        }
 
     };
 

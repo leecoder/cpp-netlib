@@ -62,13 +62,16 @@ namespace boost { namespace network { namespace http { namespace impl {
       http_async_connection(resolver_type & resolver,
                             resolve_function resolve,
                             bool follow_redirect,
-                            connection_delegate_ptr delegate)
+                            connection_delegate_ptr delegate,
+                            int timeout)
           :
             follow_redirect_(follow_redirect),
             resolver_(resolver),
             resolve_(resolve),
             request_strand_(resolver.get_io_service()),
-            delegate_(delegate) {}
+            delegate_(delegate),
+            timeout_(timeout),
+            timer_(resolver.get_io_service()) {}
 
       // This is the main entry point for the connection/request pipeline. We're
       // overriding async_connection_base<...>::start(...) here which is called
@@ -94,6 +97,15 @@ namespace boost { namespace network { namespace http { namespace impl {
                                  callback,
                                  _1,
                                  _2)));
+
+        if (timeout_ > 0) {
+          timer_.expires_from_now(boost::posix_time::seconds(timeout_));
+          timer_.async_wait(request_strand_.wrap(
+                                boost::bind(&this_type::handle_timeout,
+                                            this_type::shared_from_this(),
+                                            _1)));
+        }
+
         return response_;
       }
 
@@ -110,6 +122,24 @@ namespace boost { namespace network { namespace http { namespace impl {
       this->source_promise.set_exception(boost::copy_exception(error));
       this->destination_promise.set_exception(boost::copy_exception(error));
       this->body_promise.set_exception(boost::copy_exception(error));
+
+      timer_.cancel();
+    }
+
+    void set_timer() {
+        if (timeout_ > 0) {
+          timer_.async_wait(request_strand_.wrap(
+                                boost::bind(&this_type::handle_timeout,
+                                            this_type::shared_from_this(),
+                                            _1)));
+        }
+    }
+
+    void handle_timeout(boost::system::error_code const &ec) {
+      if (!ec)
+      {
+        delegate_->disconnect();
+      }
     }
 
     void handle_resolved(boost::uint16_t port,
@@ -208,6 +238,8 @@ namespace boost { namespace network { namespace http { namespace impl {
         false
 #endif
         ;
+        timer_.cancel();
+
         if (!ec || ec == boost::asio::error::eof || is_ssl_short_read_error) {
         logic::tribool parsed_ok;
         size_t remainder;
@@ -434,6 +466,8 @@ namespace boost { namespace network { namespace http { namespace impl {
     connection_delegate_ptr delegate_;
     boost::asio::streambuf command_streambuf;
     string_type method;
+    int timeout_;
+    boost::asio::deadline_timer timer_;
   };
 
 } // namespace impl

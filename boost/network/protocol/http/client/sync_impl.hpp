@@ -30,8 +30,9 @@ namespace boost { namespace network { namespace http {
             sync_client(bool cache_resolved, bool follow_redirect
                 , optional<string_type> const & certificate_file = optional<string_type>()
                 , optional<string_type> const & verify_path = optional<string_type>()
+                , int timeout = 0
             )
-                : connection_base(cache_resolved, follow_redirect),
+                : connection_base(cache_resolved, follow_redirect, timeout),
                 service_ptr(new boost::asio::io_service),
                 service_(*service_ptr),
                 resolver_(service_)
@@ -42,8 +43,9 @@ namespace boost { namespace network { namespace http {
             sync_client(bool cache_resolved, bool follow_redirect, boost::asio::io_service & service
                 , optional<string_type> const & certificate_file = optional<string_type>()
                 , optional<string_type> const & verify_path = optional<string_type>()
+                , int timeout = 0
             )
-                : connection_base(cache_resolved, follow_redirect),
+                : connection_base(cache_resolved, follow_redirect, timeout),
                 service_ptr(0),
                 service_(service),
                 resolver_(service_)

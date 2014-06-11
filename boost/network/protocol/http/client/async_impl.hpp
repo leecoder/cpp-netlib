@@ -37,8 +37,8 @@ namespace boost { namespace network { namespace http {
         function<void(boost::iterator_range<char const *> const &, system::error_code const &)>
         body_callback_function_type;
 
-      async_client(bool cache_resolved, bool follow_redirect, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path)
-        : connection_base(cache_resolved, follow_redirect),
+      async_client(bool cache_resolved, bool follow_redirect, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path, int timeout)
+        : connection_base(cache_resolved, follow_redirect, timeout),
         service_ptr(new boost::asio::io_service),
         service_(*service_ptr),
         resolver_(service_),
@@ -55,8 +55,8 @@ namespace boost { namespace network { namespace http {
             )));
       }
 
-      async_client(bool cache_resolved, bool follow_redirect, boost::asio::io_service & service, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path)
-        : connection_base(cache_resolved, follow_redirect),
+      async_client(bool cache_resolved, bool follow_redirect, boost::asio::io_service & service, optional<string_type> const & certificate_filename, optional<string_type> const & verify_path, int timeout)
+        : connection_base(cache_resolved, follow_redirect, timeout),
         service_ptr(0),
         service_(service),
         resolver_(service_),
@@ -64,6 +64,13 @@ namespace boost { namespace network { namespace http {
         certificate_filename_(certificate_filename),
         verify_path_(verify_path)
       {
+        connection_base::resolver_strand_.reset(new
+          boost::asio::io_service::strand(service_));
+        lifetime_thread_.reset(new boost::thread(
+          boost::bind(
+            &boost::asio::io_service::run,
+            &service_
+            )));
       }
 
       ~async_client() throw ()

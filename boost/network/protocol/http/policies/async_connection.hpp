@@ -39,10 +39,11 @@ namespace boost { namespace network { namespace http {
                 resolver_type & resolver,
                 bool https,
                 optional<string_type> const & certificate_filename,
-                optional<string_type> const & verify_path
+                optional<string_type> const & verify_path,
+                int timeout
                 )
             {
-                pimpl = impl::async_connection_base<Tag,version_major,version_minor>::new_connection(resolve, resolver, follow_redirect, https, certificate_filename, verify_path);
+                pimpl = impl::async_connection_base<Tag,version_major,version_minor>::new_connection(resolve, resolver, follow_redirect, https, certificate_filename, verify_path, timeout);
             }
 
             basic_response<Tag> send_request(string_type const & method, basic_request<Tag> const & request_, bool get_body, body_callback_function_type callback) {
@@ -69,16 +70,18 @@ namespace boost { namespace network { namespace http {
                     , resolver
                     , boost::iequals(protocol_, string_type("https"))
                     , certificate_filename
-                    , verify_path));
+                    , verify_path
+                    , timeout_));
             return connection_;
         }
 
         void cleanup() { }
 
-        async_connection_policy(bool cache_resolved, bool follow_redirect)
-            : resolver_base(cache_resolved), follow_redirect_(follow_redirect) {}
+        async_connection_policy(bool cache_resolved, bool follow_redirect, int timeout)
+            : resolver_base(cache_resolved), follow_redirect_(follow_redirect), timeout_(timeout) {}
 
         bool follow_redirect_;
+        int timeout_;
     };
 
 } // namespace http

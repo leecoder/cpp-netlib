@@ -37,6 +37,12 @@ void boost::network::http::impl::normal_delegate::read_some(
   socket_->async_read_some(read_buffer, handler);
 }
 
+void boost::network::http::impl::normal_delegate::disconnect() {
+  if (socket_.get()) {
+    socket_->close();
+  }
+}
+
 boost::network::http::impl::normal_delegate::~normal_delegate() {}
 
 #endif /* BOOST_NETWORK_PROTOCOL_HTTP_CLIENT_CONNECTION_NORMAL_DELEGATE_IPP_20110819 */

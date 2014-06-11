@@ -62,6 +62,7 @@ namespace boost { namespace network { namespace http {
         //                               -- the name of the directory from
         //                                  which the certificate authority
         //                                  files can be found
+        //      _timeout : int -- timeout seconds
 
         BOOST_PARAMETER_CONSTRUCTOR(
             basic_client, (base_facade_type), tag,
@@ -71,6 +72,7 @@ namespace boost { namespace network { namespace http {
                 (cache_resolved, (bool))
                 (openssl_certificate, (string_type))
                 (openssl_verify_path, (string_type))
+                (timeout, (int))
                 ))
 
         //

@@ -37,7 +37,8 @@ namespace boost { namespace network { namespace http { namespace impl {
         bool follow_redirect,
         bool https,
         optional<string_type> certificate_filename=optional<string_type>(),
-        optional<string_type> const & verify_path=optional<string_type>()) {
+        optional<string_type> const & verify_path=optional<string_type>(),
+        int timeout=0) {
       typedef http_async_connection<Tag,version_major,version_minor>
           async_connection;
       typedef typename delegate_factory<Tag>::type delegate_factory_type;
@@ -51,7 +52,8 @@ namespace boost { namespace network { namespace http { namespace impl {
                   resolver.get_io_service(),
                   https,
                   certificate_filename,
-                  verify_path)));
+                  verify_path),
+              timeout));
       BOOST_ASSERT(temp.get() != 0);
       return temp;
     }
