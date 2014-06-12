@@ -126,15 +126,6 @@ namespace boost { namespace network { namespace http { namespace impl {
       timer_.cancel();
     }
 
-    void set_timer() {
-        if (timeout_ > 0) {
-          timer_.async_wait(request_strand_.wrap(
-                                boost::bind(&this_type::handle_timeout,
-                                            this_type::shared_from_this(),
-                                            _1)));
-        }
-    }
-
     void handle_timeout(boost::system::error_code const &ec) {
       if (!ec)
       {
@@ -238,8 +229,6 @@ namespace boost { namespace network { namespace http { namespace impl {
         false
 #endif
         ;
-        timer_.cancel();
-
         if (!ec || ec == boost::asio::error::eof || is_ssl_short_read_error) {
         logic::tribool parsed_ok;
         size_t remainder;
@@ -391,6 +380,7 @@ namespace boost { namespace network { namespace http { namespace impl {
               this->source_promise.set_value("");
               this->part.assign('\0');
               this->response_parser_.reset();
+              this->timer_.cancel();
             } else {
               // This means the connection has not been closed yet and we want to get more
               // data.
