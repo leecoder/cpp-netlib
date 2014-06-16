@@ -77,7 +77,9 @@ namespace boost { namespace network { namespace http {
       {
         sentinel_.reset();
         if (lifetime_thread_.get()) {
-          lifetime_thread_->join();
+          if (lifetime_thread_->get_id() != boost::this_thread::get_id()) {
+            lifetime_thread_->join();
+          }
           lifetime_thread_.reset();
         }
         delete service_ptr;
