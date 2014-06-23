@@ -42,6 +42,11 @@ namespace boost { namespace network { namespace http {
                     >::type());
         }
 
+        ~basic_client_facade()
+        {
+            pimpl->wait_complete();
+        }
+
         BOOST_PARAMETER_MEMBER_FUNCTION((response const), head, tag, (required (request,(request const &)))) {
             return pimpl->request_skeleton(request, "HEAD", false, body_callback_function_type());
         }

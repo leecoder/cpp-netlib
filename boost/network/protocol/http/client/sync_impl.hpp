@@ -58,6 +58,9 @@ namespace boost { namespace network { namespace http {
                 delete service_ptr;
             }
 
+            void wait_complete()
+            {}
+
             basic_response<Tag> const request_skeleton(basic_request<Tag> const & request_, string_type method, bool get_body, body_callback_function_type callback) {
                 typename connection_base::connection_ptr connection_;
                 connection_ = connection_base::get_connection(resolver_, request_, certificate_file, verify_path);
