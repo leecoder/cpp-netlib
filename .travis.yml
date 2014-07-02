@@ -4,7 +4,9 @@ compiler:
   - clang
 env: BOOST_ROOT=$TRAVIS_BUILD_DIR/../boost
 
-before_install: curl -s http://cznic.dl.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.bz2|tar xfj - -C $BOOST_ROOT
+before_install:
+  - mkdir -p $BOOST_ROOT
+  - curl -s http://cznic.dl.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.bz2|tar xfj - -C $BOOST_ROOT
 install:
   - (cd $BOOST_ROOT; ./bootstrap.sh)
   - (cd $BOOST_ROOT; ./b2 --prefix=$PWD install)
