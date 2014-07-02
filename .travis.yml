@@ -11,8 +11,10 @@ install:
   - cd $BOOST_ROOT/boost_1_55_0
   - ./bootstrap.sh
   - ./b2 --prefix=$BOOST_ROOT toolset=$CC install
+  - cd -
 
-before_script: cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DBOOST_ROOT=$BOOST_ROOT .
+before_script:
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
 script:
   - make
   - make test
