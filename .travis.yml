@@ -8,8 +8,9 @@ before_install:
   - mkdir -p $BOOST_ROOT
   - curl -s http://cznic.dl.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.bz2|tar xfj - -C $BOOST_ROOT
 install:
-  - (cd $BOOST_ROOT; ./bootstrap.sh)
-  - (cd $BOOST_ROOT; ./b2 --prefix=$PWD install)
+  - cd $BOOST_ROOT
+  - ./bootstrap.sh
+  - ./b2 --prefix=$PWD install
 
 before_script: cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DBOOST_ROOT=$BOOST_ROOT
 script:
