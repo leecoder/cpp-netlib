@@ -12,7 +12,7 @@ install:
   - ./bootstrap.sh
   - ./b2 --prefix=$BOOST_ROOT install
 
-before_script: cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DBOOST_ROOT=$BOOST_ROOT
+before_script: cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DBOOST_ROOT=$BOOST_ROOT .
 script:
   - make
   - make test
