@@ -57,6 +57,7 @@ endif()
 
 if (OPENSSL_FOUND)
     add_definitions(-DBOOST_NETWORK_ENABLE_HTTPS)
+    add_definitions(-DOPENSSL_NO_SSL2)
     include_directories(${OPENSSL_INCLUDE_DIR})
 endif()
 
